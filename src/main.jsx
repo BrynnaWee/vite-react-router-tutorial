@@ -32,6 +32,7 @@ const router = createBrowserRouter([
       },{
         path: "contacts/:contactId/destory",
         action: destroyAction,
+        errorElement:  <div>삭제 대상이 주소록에 없어요~ㅠㅠ</div>,
       }
     ]
   }
