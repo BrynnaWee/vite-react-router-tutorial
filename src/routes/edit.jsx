@@ -5,12 +5,25 @@ import {
   } from "react-router-dom";
   import { updateContact } from "../contacts";
   
+
   export async function action({ request, params }) {
+    // console.log('request',request);
     const formData = await request.formData();
+    // console.log('formData',formData);
+    // const firstName = formData.get("first");
+    // const lastName = formData.get("last");
     const updates = Object.fromEntries(formData);
+    // console.log('updates',updates);
     await updateContact(params.contactId, updates);
     return redirect(`/contacts/${params.contactId}`);
   }
+
+/*
+원래는 여기도 loader가 들어가야하지만, 어차피 contact.jsx에서 같은 내용의 로더를 사용하고 있기 떄문에
+main.jsx의 라우터 설정 부분에서 loader속성에 contact.jsx의 로더를 넣어주었다.
+그 결과, edit컴포넌트가 렌더링 될 떄에도 contact.jsx의 로더함수가 실행된다.
+*/
+
 export default function EditContact(){
     const {contact} = useLoaderData();
 
@@ -29,7 +42,7 @@ export default function EditContact(){
                     placeholder='Last'
                     aria-label='Last name'
                     type="text"
-                    name="Last"
+                    name="last"
                     defaultValue={contact.last}
                 />
             </p>
