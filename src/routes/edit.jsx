@@ -2,6 +2,7 @@ import {
     Form,
     useLoaderData,
     redirect,
+    useNavigate
   } from "react-router-dom";
   import { updateContact } from "../contacts";
   
@@ -26,6 +27,7 @@ main.jsx의 라우터 설정 부분에서 loader속성에 contact.jsx의 로더�
 
 export default function EditContact(){
     const {contact} = useLoaderData();
+    const navigate = useNavigate();
 
     return (
         <Form method="post" id="contact-form">
@@ -76,7 +78,9 @@ export default function EditContact(){
             </label>
             <p>
                 <button type="submit">Save</button>
-                <button type="button">Cancel</button>
+                <button type="button"
+                onClick={()=>{navigate(-1);}}
+                >Cancel</button>
             </p>
         </Form>
     )

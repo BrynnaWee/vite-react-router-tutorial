@@ -1,10 +1,18 @@
+import { useEffect } from 'react';
 import { Outlet, NavLink, useLoaderData, Form, redirect, useNavigation } from 'react-router-dom';
 import { getContacts, createContact } from '../contacts';
 
-export async function loader(){
-    const contacts = await getContacts();
-    console.log('root loader');
-    return {contacts}
+export async function loader({request}){
+    console.log('request',request);
+    const url = new URL(request.url);
+    const q = url.searchParams.get('q');
+    const contacts = await getContacts(q);
+    //루트경로가 기본이므로, search폼에서 엔터를 쳤을 때
+    //다시 페이지가 로드되면서 현재 current경로 뒤에 쿼리가 붙는다.
+    //이는 root컴포넌트에서 목록을 필터링하기 위해 사용되는 것으로
+    //현재 contact페이지나 edit페이지를 보는 것과는 무관하다.
+   // (서브페이지는 그대로 유지)
+    return {contacts,q}
 }
 
 export async function action(){
@@ -15,21 +23,26 @@ export async function action(){
 
 export default function Root(){
 
-    const { contacts } = useLoaderData();
+    const { contacts, q } = useLoaderData();
     const navigation = useNavigation();
+
+    useEffect(()=>{
+        document.getElementById("q").value = q;
+    },[q])
 
     return (
         <>
         <div id="sidebar">
             <h1>router contacts</h1>
             <div>
-                <form id="search-form" role="search">
+                <Form id="search-form" role="search">
                     <input 
                         id="q"
                         aria-label="Search contacts"
                         placeholder="Search"
                         type="search"
                         name="q"
+                        defaultValue={q}
                     />
                     <div 
                         id="search-spinner"
@@ -40,7 +53,7 @@ export default function Root(){
                     className="sr-only"
                     aria-live="polite"
                     ></div>
-                </form>
+                </Form>
                 <Form method="post">
                     <button type="submit">New</button>
                 </Form>
@@ -64,7 +77,7 @@ export default function Root(){
                                     ):(
                                         <i>No name</i>
                                     )}{" "}
-                                    {contacts.facorite&&<span>★</span>}
+                                    {contacts.favorite&&<span>★</span>}
                                 </NavLink>
                             </li>
                         ))
