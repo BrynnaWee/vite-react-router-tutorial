@@ -8,6 +8,7 @@ import {action as destroyAction} from './routes/destroy';
 import ErrorPage from './routes/error-page'
 import './index.css'
 import Etc from './routes/etc';
+import Index, { loader as IndexLoader } from './routes';
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
     action: rootAction,
     children: [
       {
+        index: true,
+        element: <Index />,
+        loader: IndexLoader,
+      },{
         path:"etc",
         element: <Etc />
       },{
